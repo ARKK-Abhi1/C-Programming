@@ -13,6 +13,7 @@ int fetchCredentials() {
 	}
 	char c;
 	int counter=0;
+	/* This loop will fetch the ssid */
 	while((c=fgetc(fp))!='\n') {
 		ssid[counter]=c;
 		counter++;
@@ -21,6 +22,7 @@ int fetchCredentials() {
 	}
 	ssid[counter]='\0';
 	counter=0;
+	/* This loop will fetch the password */
 	while((c=getc(fp))!=EOF) {
 		password[counter]=c;
 		counter++;
@@ -51,6 +53,8 @@ int changeCredentials() {
 	fclose(fp);
 }
 
+
+/* Function to start the Hotspot network */
 int startHotspot() {
 	system("cls");
 	return (system("netsh wlan start hostednetwork"));
