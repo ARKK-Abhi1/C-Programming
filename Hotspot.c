@@ -2,7 +2,8 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
-char ssid[50],password[50];
+#include<ctype.h>
+char ssid[70],password[70];
 /* This function will fetch credentials from the file */
 int fetchCredentials() {
 	FILE *fp=fopen(FILE_NAME,"r");
@@ -38,12 +39,16 @@ int fetchCredentials() {
 /* This function will change the credentials for the Hotspot network */
 int changeCredentials() {
 	printf("Enter the SSID : ");
-	char id[50];
+	char id[70];
 	gets(id);
+	if((toupper(id[0])<65)||(toupper(id[0])>90)) {
+		printf("First character must be an alphabet...\n");
+		return 0;
+	}
 	printf("Enter the password : ");
-	char passW[50];
+	char passW[70];
 	gets(passW);
-	if(strlen(passW)<8) {
+	if(strlen(passW)<8||strlen(passW)>63) {
 		printf("The password should be between 8 and 63 characters long");
 		return 0;
 	}
