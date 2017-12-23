@@ -9,6 +9,8 @@ int fetchCredentials() {
 	FILE *fp=fopen(FILE_NAME,"r");
 	if(fp==NULL) {
      	printf("Error in executing the program : cannot open the credentials file");
+		strcpy(ssid,"windows hotspot");
+		strcpy(password,"windowshs");
 		return 0;
 	}
 	char c;
@@ -81,10 +83,13 @@ int main() {
 		printf("1. Start Hotspot\n2. Stop Hotspot\n3. Restart Hotspot\n4. Change Credentials\n5. Exit\n\n");
 		scanf("%d",&choice);
 		getchar(); // clears the buffer
+		int x;
 		switch(choice) {
-			case 1 : fetchCredentials();
+			case 1 : x=fetchCredentials();
 			         setupHotspot();
 					 startHotspot();
+					 if(x==0)
+						 printf("No credentials file found...\nStarting hotspot with default settings\nSSID : %s\nPassword : %s\n",ssid,password);
 				     break;
 			case 2 : stopHotspot();
 					 break;
