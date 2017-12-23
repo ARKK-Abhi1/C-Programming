@@ -59,11 +59,20 @@ int changeCredentials() {
 /* Function to start the Hotspot network */
 int startHotspot() {
 	system("cls");
-	return (system("netsh wlan start hostednetwork"));
+	if((system("netsh wlan start hostednetwork"))!=0)
+		return 0;
+	else {
+		printf("\n--------------------------Current Settings-------------------------\n");
+	    printf("SSID     : %s\n",ssid);
+	    printf("PASSWORD : %s\n",password);
+		return 1;
+	}
 }
 int stopHotspot() {
 	system("cls");
-	return (system("netsh wlan stop hostednetwork"));
+	if(system("netsh wlan stop hostednetwork")==-1)
+		return 0;
+	return 1;
 }
 int setupHotspot() {
 	system("cls");
@@ -73,23 +82,27 @@ int setupHotspot() {
 	strcat(command,"\" key=\"");
 	strcat(command,password);
 	strcat(command,"\"");
-	system(command);
+	return system(command);
 }
 
 int main() {
 	int choice;
 	do {
-		printf("\nChose an Option\n");
+		printf("\n---------------------------------------Chose an Option-----------------------------------\n");
 		printf("1. Start Hotspot\n2. Stop Hotspot\n3. Restart Hotspot\n4. Change Credentials\n5. Exit\n\n");
 		scanf("%d",&choice);
 		getchar(); // clears the buffer
-		int x;
+		int fetched,started;
 		switch(choice) {
-			case 1 : x=fetchCredentials();
+			case 1 : fetched=fetchCredentials();
 			         setupHotspot();
-					 startHotspot();
-					 if(x==0)
-						 printf("No credentials file found...\nStarting hotspot with default settings\nSSID : %s\nPassword : %s\n",ssid,password);
+					 started=startHotspot();
+					 if(started) {
+					     if(!fetched) {
+						     printf("Credentials file not found...\nHotspot started with default settings\n");
+					         printf("Please use the 'Change credentials option' to configure the hotspot\n");
+					     }
+			         }
 				     break;
 			case 2 : stopHotspot();
 					 break;
