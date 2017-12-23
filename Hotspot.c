@@ -1,9 +1,31 @@
 #define FILE_NAME "credentials.txt"
+#define SSID_LENGTH 30
+#define PASSWORD_LENGTH 63
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
 #include<ctype.h>
-char ssid[70],password[70];
+char ssid[SSID_LENGTH],password[PASSWORD_LENGTH];
+
+/* This function will read the input from the stdin and flush any extra input */
+char *reads(char *array,int size) {
+	char c;
+	int i;
+	for(i=0;i<size-1;i++) {
+		if((c=fgetc(stdin))=='\n') {
+			*(array+i)='\0';
+			break;
+		}
+		*(array+i)=c;
+	}
+	if(i==size-1) {
+		*(array+size-1)='\0';
+		/* The line below will flush the stdin */
+		while((fgetc(stdin)!='\n'));
+	}
+	return array;
+}
+
 /* This function will fetch credentials from the file */
 int fetchCredentials() {
 	FILE *fp=fopen(FILE_NAME,"r");
@@ -38,28 +60,36 @@ int fetchCredentials() {
 
 /* This function will change the credentials for the Hotspot network */
 int changeCredentials() {
+	/*Asking the user to enter the ssid */
+	//---------------------------------------------------------------
 	printf("Enter the SSID : ");
-	char id[70];
-	fgets(id,70,stdin);
-	if(strlen(id)>63) {
-		printf("Too long ssid...\nMust be less than 63 characters long\n");
-		while(fgetc(stdin)!='\n');// This line will flush the stdin 
+	char id[SSID_LENGTH+2];
+	reads(id,SSID_LENGTH+2);
+	if(strlen(id)>SSID_LENGTH) {
+		printf("Too long ssid...\nMust be less than 30 characters long\n");
 		return 0;
 	}
 	if((toupper(id[0])<65)||(toupper(id[0])>90)) {
 		printf("First character must be an alphabet...\n");
 		return 0;
 	}
+	id[SSID_LENGTH]='\0';
+	//------------------------------------------------------------------------
+	
 	
 	/* Asking the user to enter the password if the ssid is valid */
+	//-----------------------------------------------------------------
 	printf("Enter the password : ");
-	char passW[70];
-	fgets(passW,70,stdin);
-	while(fgetc(stdin)!='\n');
+	char passW[PASSWORD_LENGTH+2];
+	reads(passW,PASSWORD_LENGTH+2);
 	if(strlen(passW)<8||strlen(passW)>63) {
 		printf("The password should be between 8 and 63 characters long");
 		return 0;
 	}
+	passW[PASSWORD_LENGTH]='\0';
+	//-------------------------------------------------------------------
+	
+	/* Writing the ssid and password to the text file */
 	FILE *fp=fopen(FILE_NAME,"w");
 	if(fp==NULL)
 		return 0;
