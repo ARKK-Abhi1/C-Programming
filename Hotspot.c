@@ -40,14 +40,22 @@ int fetchCredentials() {
 int changeCredentials() {
 	printf("Enter the SSID : ");
 	char id[70];
-	gets(id);
+	fgets(id,70,stdin);
+	if(strlen(id)>63) {
+		printf("Too long ssid...\nMust be less than 63 characters long\n");
+		while(fgetc(stdin)!='\n');// This line will flush the stdin 
+		return 0;
+	}
 	if((toupper(id[0])<65)||(toupper(id[0])>90)) {
 		printf("First character must be an alphabet...\n");
 		return 0;
 	}
+	
+	/* Asking the user to enter the password if the ssid is valid */
 	printf("Enter the password : ");
 	char passW[70];
-	gets(passW);
+	fgets(passW,70,stdin);
+	while(fgetc(stdin)!='\n');
 	if(strlen(passW)<8||strlen(passW)>63) {
 		printf("The password should be between 8 and 63 characters long");
 		return 0;
